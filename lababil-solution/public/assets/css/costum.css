@@ -1,0 +1,131 @@
+/* =========================================
+   Lababil Solution - Custom CSS
+   ========================================= */
+
+body { 
+  font-family: system-ui, -apple-system, sans-serif; 
+  background: #f8fafc; 
+}
+
+.modal, .login-screen { 
+  display: none; 
+}
+
+.modal.active, .login-screen.active { 
+  display: flex; 
+}
+
+.page { 
+  display: none; 
+  animation: fadeIn 0.3s ease; 
+}
+
+.page.active { 
+  display: block; 
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(5px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+/* =========================================
+   Sidebar & Mobile Overlay
+   ========================================= */
+.sidebar { 
+  transition: transform 0.3s ease; 
+  z-index: 50; 
+}
+
+.overlay { 
+  display: none; 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.5); 
+  z-index: 40; 
+}
+
+.overlay.active { 
+  display: block; 
+}
+
+@media (max-width: 768px) {
+  .sidebar { 
+    transform: translateX(-100%); 
+    position: fixed; 
+    height: 100vh; 
+  }
+  .sidebar.open { 
+    transform: translateX(0); 
+  }
+  .btn-mobile-full { 
+    width: 100%; 
+    justify-content: center; 
+  }
+}
+
+@media (min-width: 769px) { 
+  .overlay { display: none !important; } 
+}
+
+/* =========================================
+   Android Touch Fix
+   ========================================= */
+.nav-link {
+  touch-action: manipulation !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 9999 !important;
+  user-select: none;
+  -webkit-user-select: none;
+  display: block;
+  width: 100%;
+}
+
+.nav-link:active { 
+  background-color: rgba(255,255,255,0.2); 
+}
+
+#sidebar-overlay { 
+  pointer-events: none !important; 
+}
+
+#sidebar-overlay.active { 
+  pointer-events: auto !important; 
+}
+
+aside { 
+  z-index: 1000 !important; 
+}
+
+/* =========================================
+   Table & Utilities
+   ========================================= */
+.table-responsive { 
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+}
+
+.breakdown-row { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 6px 0; 
+  font-size: 0.9rem; 
+}
+
+.breakdown-total { 
+  border-top: 2px solid #e5e7eb; 
+  padding-top: 10px; 
+  margin-top: 8px; 
+  font-weight: bold; 
+  font-size: 1.1rem; 
+}
+
+/* Mencegah auto-zoom pada input di iOS/Mobile */
+@media screen and (max-width: 768px) { 
+  input, select, textarea { 
+    font-size: 16px !important; 
+  } 
+}

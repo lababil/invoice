@@ -1,0 +1,54 @@
+{
+  "name": "Lababil Solution - Sistem Penjualan",
+  "short_name": "Lababil",
+  "description": "Sistem Penjualan CCTV, Listrik, Network & Jasa Pemasangan",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f9fafb",
+  "theme_color": "#7c3aed",
+  "scope": "/",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "logo-lababil.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-lababil.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "shopping"],
+  "shortcuts": [
+    {
+      "name": "Transaksi Baru",
+      "short_name": "Transaksi",
+      "description": "Buat transaksi baru",
+      "url": "/?page=transaksi",
+      "icons": [
+        {
+          "src": "logo-lababil.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Tambah Produk",
+      "short_name": "Produk",
+      "description": "Tambah produk baru",
+      "url": "/?page=produk",
+      "icons": [
+        {
+          "src": "logo-lababil.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": []
+}

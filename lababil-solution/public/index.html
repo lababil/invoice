@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lababil Solution - Penjualan</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e40af">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50 overflow-x-hidden">
+
+    <div id="login-screen" class="login-screen fixed inset-0 bg-blue-600 items-center justify-center p-4 z-[100]">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-store text-3xl text-blue-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Lababil Solution</h2>
+                <p class="text-gray-500">Silakan login untuk melanjutkan</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="login-email" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-pass" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold hover:bg-blue-700 transition-all">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden flex min-h-screen">
+        
+        <div id="sidebar-overlay" class="overlay" onclick="closeSidebar()"></div>
+
+        <aside id="sidebar" class="sidebar w-64 bg-blue-800 text-white flex-shrink-0 flex flex-col">
+            <div class="p-6">
+                <h1 class="text-xl font-bold flex items-center gap-3">
+                    <i class="fas fa-shopping-cart"></i> Lababil POS
+                </h1>
+            </div>
+            
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <a href="#" onclick="showPage('dashboard')" class="nav-link flex items-center gap-3 p-3 rounded-xl hover:bg-blue-700 transition-all">
+                    <i class="fas fa-chart-line w-6"></i> Dashboard
+                </a>
+                <a href="#" onclick="showPage('pos')" class="nav-link flex items-center gap-3 p-3 rounded-xl hover:bg-blue-700 transition-all">
+                    <i class="fas fa-cash-register w-6"></i> Penjualan
+                </a>
+                <a href="#" onclick="showPage('products')" class="nav-link flex items-center gap-3 p-3 rounded-xl hover:bg-blue-700 transition-all admin-only">
+                    <i class="fas fa-box w-6"></i> Produk
+                </a>
+                <a href="#" onclick="showPage('customers')" class="nav-link flex items-center gap-3 p-3 rounded-xl hover:bg-blue-700 transition-all">
+                    <i class="fas fa-users w-6"></i> Pelanggan
+                </a>
+                <a href="#" onclick="showPage('reports')" class="nav-link flex items-center gap-3 p-3 rounded-xl hover:bg-blue-700 transition-all">
+                    <i class="fas fa-file-invoice w-6"></i> Laporan
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-blue-700">
+                <button onclick="handleLogout()" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-600 transition-all text-blue-200 hover:text-white">
+                    <i class="fas fa-sign-out-alt w-6"></i> Keluar
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col min-w-0">
+            <header class="bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-30">
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-600 p-2">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center gap-4">
+                    <span id="user-display" class="text-sm font-medium text-gray-600 hidden md:block">Selamat Datang</span>
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">L</div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-8 flex-1 overflow-y-auto">
+                
+                <div id="dashboard-page" class="page active space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-600">
+                            <p class="text-gray-500 text-sm">Produk Terdaftar</p>
+                            <h3 id="stat-products" class="text-3xl font-bold mt-1">0</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-600">
+                            <p class="text-gray-500 text-sm">Penjualan Hari Ini</p>
+                            <h3 id="stat-sales-today" class="text-3xl font-bold mt-1">Rp 0</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-600">
+                            <p class="text-gray-500 text-sm">Total Pelanggan</p>
+                            <h3 id="stat-customers" class="text-3xl font-bold mt-1">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products-page" class="page space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Manajemen Produk</h2>
+                        <div class="flex gap-2">
+                             <button onclick="openModal('modal-category')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold hover:bg-gray-300">Kategori</button>
+                             <button onclick="openModal('modal-product')" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700">+ Produk</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="p-4">Nama Produk</th>
+                                    <th class="p-4">Kategori</th>
+                                    <th class="p-4">Harga</th>
+                                    <th class="p-4">Stok</th>
+                                    <th class="p-4">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="pos-page" class="page">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm flex gap-2">
+                                <input type="text" placeholder="Cari produk..." class="flex-1 p-2 border rounded-lg">
+                                <select id="pos-category-filter" class="p-2 border rounded-lg bg-gray-50">
+                                    <option value="">Semua Kategori</option>
+                                </select>
+                            </div>
+                            <div id="pos-products" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm flex flex-col h-fit sticky top-24">
+                            <div class="p-4 border-b">
+                                <h3 class="font-bold text-lg">Keranjang Belanja</h3>
+                                <select id="pos-customer" class="w-full mt-2 p-2 border rounded-lg text-sm bg-gray-50"></select>
+                            </div>
+                            <div id="cart-items" class="flex-1 p-4 space-y-3 overflow-y-auto max-h-[400px]"></div>
+                            <div class="p-4 border-t bg-gray-50 rounded-b-xl">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-gray-500">Total Tagihan:</span>
+                                    <span id="cart-total" class="text-2xl font-bold text-blue-600">Rp 0</span>
+                                </div>
+                                <button onclick="checkout()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-all shadow-lg">BAYAR SEKARANG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reports-page" class="page space-y-4">
+                    <h2 class="text-2xl font-bold text-gray-800">Laporan Penjualan</h2>
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="p-4">Waktu</th>
+                                    <th class="p-4">Pelanggan</th>
+                                    <th class="p-4">Total</th>
+                                    <th class="p-4">Cetak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="customers-page" class="page space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Pelanggan</h2>
+                        <button onclick="openModal('modal-customer')" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">+ Pelanggan</button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="p-4">Nama</th>
+                                    <th class="p-4">Kontak</th>
+                                    <th class="p-4">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customer-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="assets/js/app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW Registered'))
+                    .catch(err => console.log('SW Error', err));
+            });
+        }
+    </script>
+</body>
+</html>
